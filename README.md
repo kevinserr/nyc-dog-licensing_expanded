@@ -9,123 +9,131 @@ The project includes data cleaning and feature engineering in Python, followed b
 
 **Stakeholder:** New York City Director of Animal Services.
 
-The goal is to help the shareholder connect with dog owners by hosting seasonal town halls, sharing resources, and educating the public about dog licensing and pet care.
+The goal is to help the stakeholder connect with dog owners by hosting seasonal town halls, sharing resources, and educating the public about dog licensing and pet care.
 These insights connect directly to public health by emphasizing the importance of early dog registration—ideally within the year a puppy is born—to promote timely vaccinations and responsible pet ownership.
 
-## Core Business Question: 
+## Core Business Question
 > **Are there patterns in current dog licensing rates that help us plan and promote future town halls more effectively?**
+
 The dashboard answers this question by identifying:
 - The lowest and highest rates of dog license issuance across NYC boroughs.
-- When licenses are issued, most frequently.
+- When licenses are issued most frequently.
 - The average age at which dogs are licensed.
-- The dog age distribution  
+- The dog age distribution.
+
+---
 
 ## Exploratory Data Analysis (EDA) in Python
 **Tools Used:** `pandas`, `matplotlib`, `seaborn`, and `plotly`
 
-1. **Data Cleaning**
-   Our team started its data cleaning process by making sure each column was in the correct format. This included:
-   - Renaming the columns for easy data handling
+### 1. Data Cleaning
+Our team started its data cleaning process by making sure each column was in the correct format. This included:
+- Renaming the columns for easy data handling.
+- Removing rows with missing values (e.g., gender, breed, ZIP, date). We dropped 1,810 rows in the `name` column, 21 rows in `Gender`, and 82 in `License expire date`. These rows were dropped because they represent only 1% of all data in the dataset.
+- Checking and correcting data types for each column.
+- Creating a `get_borough()` function that maps ZIP codes to boroughs using a custom dictionary. For example, ZIP codes from 10001–10282 are assigned to Manhattan.
 
-     <img width="428" height="172" alt="Screenshot 2025-07-16 at 11 51 01 PM" src="https://github.com/user-attachments/assets/e3963b55-e645-4151-a992-03aca0304920" />
+### 2. Feature Engineering
+We created three new columns to help surface deeper insights from the data:
+- `DogAgeAtLicense`: Calculated age based on birth year and license date.
+- `IssueMonth` and `IssueYear`: Extracted from the license issue date.
+- Filtered out unrealistic ages (<0 or >25). Dogs appearing to be 30 years old are likely data errors, and ages above 25 are extremely rare. Rows outside this range were removed.
 
-   - Removing rows with missing values (e.g., gender, breed, ZIP, date).
-   -   We dropped 1810 rows in the `name column`, 21 rows in `Gender`, and 82 in `Licence expire date`. We dropped all these rows because they only represent 1% of all the data in our dataset
-   - Checking the data type for each column in the dataset, and next changing the one in the wrong format.
-     <img width="539" height="116" alt="Screenshot 2025-07-16 at 11 59 03 PM" src="https://github.com/user-attachments/assets/ab94f70f-1bfa-4cf4-a833-24928f1a4704" />
+### 3. Export
+The final cleaned dataset is saved as `final_dataset.csv` for use in Tableau.
 
-   - We created a get_borough() function that maps zip codes to boroughs using a custom dictionary. For example, zip codes from 10001–10282 are assigned to Manhattan
+---
 
-     <img width="633" height="434" alt="Screenshot 2025-07-17 at 12 01 55 AM" src="https://github.com/user-attachments/assets/c5f3b98c-63fa-4b07-98fb-cc10449ce89a" />
+## Tableau Workflow / Visualizations
 
-  2. **Feature Engineering**
-     We created three new columns to help find more insights with the data.
-     - `DogAgeAtLicense`: Calculated age based on birth year and license date.
-     - `IssueMonth` and `IssueYear`: Extracted from license issue date.
-       <img width="724" height="116" alt="Screenshot 2025-07-17 at 12 10 22 AM" src="https://github.com/user-attachments/assets/18141a48-e667-42bf-8c3e-b7d5b3dd2fb1" />
+After importing the cleaned dataset into Tableau, our team created visualizations focused on neighborhoods with the highest and lowest dog licenses issued, and the average ages of dogs at licensing — supporting awareness and public health safety.
 
-     - Filtered out unrealistic ages (<0 or >25). In this large dataset, we have bad data, like: Dogs that appear to be 30 years old, which is not realistic (the average dog lifespan is 10–15 years) So we removed rows where: The age is less than 0 → probably a mistake or The age is more than 25 → extremely rare or likely wrong. 
-        <img width="586" height="33" alt="Screenshot 2025-07-17 at 12 16 47 AM" src="https://github.com/user-attachments/assets/c8d533cb-d550-4a9b-89c0-6382d1f88dca" />
+Our dashboard allows users to:
+- Filter by borough and license issue year.
+- View boroughs with the highest and lowest dog license rates.
+- Analyze the average age of dogs at license issuance.
 
-  3. **Export**
+This dashboard helps stakeholders identify where outreach and town halls are most needed.
 
-      - The final cleaned dataset is saved as `final_dataset.csv` for use in Tableau.
+Find the final interactive dashboard built in Tableau here: [Dashboard](https://public.tableau.com/app/profile/kevin.serrano6220/viz/MODproject_17526900544830/Dashboard1?publish=yes)
 
-        <img width="384" height="33" alt="Screenshot 2025-07-17 at 12 23 40 AM" src="https://github.com/user-attachments/assets/295d0eae-6b37-4035-8248-a9e9719cc3be" />
+Find the expanded policy & outreach dashboard here: [Expansion Dashboard](https://public.tableau.com/app/profile/kevin.serrano6220/viz/Dashboard_2_0_17763041091450/Dashboard2?publish=yes)
 
+---
 
+## Expansion
 
-  5. Tableau Workflow / Visualizations
-     
-     After importing the cleaned dataset in Tableau, our team was tasked with creating data visualizations with easier access to the information when it comes to              neighborhoods with the highest and lowest Dog licenses issued, and the average ages of dogs for which these licenses are issued, which can help create awareness and       contribute to public health safety. 
-         <img width="1428" height="814" alt="image" src="https://github.com/user-attachments/assets/04edacfa-5157-4587-a90d-f0ff5fd2b471" />
+Building on the original project, this expansion reframes the dashboard for a policy audience — specifically the NYC Department of Health and Mental Hygiene — and introduces normalized metrics to enable fairer comparisons across boroughs.
 
+### What was added
 
+**Feature Engineering**
+- Added a `dogs_per_1000` metric normalizing license counts by borough population. This surfaces the Bronx as the most under-licensed borough in the city — a finding that raw counts alone would not reveal.
+- Computed `pct_of_total_dogs`, `unique_breeds`, and `density_rank` per borough to support richer comparisons.
+- Generated a `borough_summary_tableau.csv` file containing all pre-aggregated metrics, ready for direct connection in Tableau.
 
-      Our dashboard allows users to:
-     - Filter by borough and license issue year.
-     - View boroughs with the highest and lowest dog license rates.
-     - Analyze the average age of dogs at license issuance.
-     This Dashboard helps stakeholders identify where outreach and town halls are most needed.
+**Dashboard Enhancements**
+The Tableau dashboard was redesigned with a policy and outreach focus, including:
+- A normalized horizontal bar chart showing dogs per 1,000 residents with a diverging red-to-green color scale centered at the citywide average.
+- A grouped bar chart comparing each borough's share of licenses vs. share of city population, making licensing gaps immediately visible.
+- An outreach priority map color-encoded by per-capita licensing rate.
+- Insight-driven chart titles replacing descriptive labels (e.g., "Three boroughs fall below the citywide average of 91 per 1,000").
+- KPI tiles for total licenses, citywide average, and number of boroughs needing outreach.
+- Interactive filters with a borough dropdown and year slider.
 
-      Find the final interactive dashboard built in Tableau here: [Dashboard](https://public.tableau.com/app/profile/kevin.serrano6220/viz/MODproject_17526900544830/Dashboard1?publish=yes)
+**Documentation**
+- Added stakeholder-facing recommendations covering targeted outreach priorities, COVID-era license lapse follow-up, and next steps for integrating external datasets such as ACS income data.
+
+---
 
 ## Business Recommendations
 
 Based on our findings, we propose the following:
-- Increase licensing in underrepresented boroughs
-  - Focus outreach efforts in neighborhoods with the lowest registration rates.
-- Promote early licensing (<2 years old)
-  Tailor content to **new dog owners and puppies**, since most dogs are under 3 years old.
-  - This improves vaccination tracking and contributes to rabies prevention.
-- Targeted town halls:
-  - Host town halls in areas with low licensing rates and Boroughs with high numbers of older, unlicensed dogs (>5 years old). 
 
-  These efforts support:
-  - Stronger community relationships
-  - Enhanced public safety
-  - Improved animal care and control
-  - Higher rates of responsible pet ownership citywide
- 
+- **Increase licensing in underrepresented boroughs.** Focus outreach efforts in the Bronx (51 dogs per 1,000 residents) and Brooklyn (73 per 1,000), which fall furthest below the citywide average of 91 per 1,000.
+- **Promote early licensing (<2 years old).** Tailor content to new dog owners and puppies, since most dogs are licensed under 3 years old. This improves vaccination tracking and contributes to rabies prevention.
+- **Follow up on 2020 COVID adopters.** Licensing spiked 40% in 2020 during pandemic-era adoptions. Many of those licenses may have since lapsed — a targeted renewal campaign for 2020–2021 cohorts could recover significant compliance.
+- **Integrate income and housing data.** Merging with ACS data would allow the Department of Health to distinguish between low ownership rates and low compliance rates, which is critical for designing the right intervention.
+- **Host targeted town halls.** Prioritize areas with low licensing rates and boroughs with high numbers of older, unlicensed dogs (>5 years old).
+
+These efforts support:
+- Stronger community relationships
+- Enhanced public safety
+- Improved animal care and control
+- Higher rates of responsible pet ownership citywide
+
+---
+
 ## Project Reflection
 
-**Most Important Insight**:
-> Most licenses are issued in the spring and early summer, and a large number of them are for very young dogs. This suggests town halls should focus on new dog owner support and be held between **April and July**, in areas with high registration activity.
-> Also, the dashboard reveals the average age of dogs at the time of licensing. Late licensing can lead to missed vaccinations, raising public health risks, particularly related to rabies, a disease that poses a danger to both pets and humans.
+**Most Important Insight**
+> Most licenses are issued in the spring and early summer, and a large number are for very young dogs. This suggests town halls should focus on new dog owner support and be held between **April and July**, in areas with high registration activity.
+> The dashboard also reveals that late licensing can lead to missed vaccinations, raising public health risks — particularly related to rabies, which poses a danger to both pets and humans.
+> The expansion further shows that raw license counts are misleading: normalizing by population reveals the Bronx as the most underserved borough, with a per-capita rate nearly 3x lower than Manhattan.
 
 **Prioritizing Dashboard Features**
-> Given time constraints, we prioritized visualizations that directly aligned with our business question, those that highlighted licensing rates across boroughs, and showcased dog age distribution. These visuals most effectively support our case for targeted town halls and public health campaigns.
+> Given time constraints, we prioritized visualizations that directly aligned with our business question — highlighting licensing rates across boroughs and showcasing dog age distribution. The expansion added normalization and policy framing to make those insights actionable for a government stakeholder audience.
 
-**Repo Navigation**
+---
+
+## Repo Navigation
 ```
 ├── data/
 │   ├── raw/
-│         └──NYC_Dog_Licensing_Dataset_20250713.csv
+│   │   └── NYC_Dog_Licensing_Dataset_20250713.csv
 │   └── cleaned/
-│        └── final_dataset.csv
-│──  notebooks/
-│        └── data_cleaning.ipynb
+│       ├── final_dataset.csv
+│       └── borough_summary_tableau.csv
+├── notebooks/
+│   └── data_cleaning.ipynb
 └── README.md
-
 ```
-**People who collaborated in this project**
+
+---
+
+## Contributors
+
+**Original project**
 - Ibrahima Diallo: [LinkedIn](https://www.linkedin.com/in/ibranova/)
 - Kevin Serrano Lopez: [LinkedIn](https://www.linkedin.com/in/kevin-serrano-lopez/)
 - Itzel Sanchez: [LinkedIn](https://www.linkedin.com/in/itzel-sanchez-8932b6334/)
-
-
-
-
-
-
-
-
-
-     
-
-
-
-
-
-
-
